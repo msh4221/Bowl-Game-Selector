@@ -4,6 +4,7 @@ import api from '../api/client';
 function GameList({ selectedUser, onPickMade }) {
   const [games, setGames] = useState([]);
   const [picks, setPicks] = useState({});
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -13,14 +14,15 @@ function GameList({ selectedUser, onPickMade }) {
 
   const loadData = async () => {
     try {
-      const [gamesData, picksData] = await Promise.all([
+      const [gamesData, picksData, usersData] = await Promise.all([
         api.getGames(),
-        api.getPicks()
+        api.getPicks(),
+        api.getUsers()
       ]);
 
       setGames(gamesData);
+      setUsers(usersData);
 
-      // Organize picks by game_id and user
       const picksMap = {};
       picksData.forEach(pick => {
         if (!picksMap[pick.game_id]) {
@@ -37,9 +39,10 @@ function GameList({ selectedUser, onPickMade }) {
     }
   };
 
-  const handlePick = async (gameId, team) => {
+  const handlePick = async (gameId, userName, team) => {
+    if (userName !== selectedUser) return;
     try {
-      await api.submitPick(gameId, selectedUser, team);
+      await api.submitPick(gameId, userName, team);
       await loadData();
       if (onPickMade) onPickMade();
     } catch (err) {
@@ -59,15 +62,15 @@ function GameList({ selectedUser, onPickMade }) {
     });
   };
 
-  const getSpreadDisplay = (game, team) => {
-    if (!game.spread) return '';
+  const getSpreadDisplay = (spread) => {
+    if (!spread) return '-';
+    return spread > 0 ? `+${spread}` : spread.toString();
+  };
 
-    if (team === game.home_team) {
-      return game.spread > 0 ? `+${game.spread}` : game.spread.toString();
-    } else {
-      const awaySpread = -game.spread;
-      return awaySpread > 0 ? `+${awaySpread}` : awaySpread.toString();
-    }
+  const truncateTeam = (name, maxLen = 8) => {
+    if (!name) return '';
+    if (name.length <= maxLen) return name;
+    return name.substring(0, maxLen - 1) + '…';
   };
 
   if (loading) {
@@ -86,105 +89,128 @@ function GameList({ selectedUser, onPickMade }) {
     );
   }
 
-  // Group games by playoff status
   const playoffGames = games.filter(g => g.is_playoff);
   const bowlGames = games.filter(g => !g.is_playoff);
 
-  const renderGameCard = (game) => {
-    const userPick = picks[game.id]?.[selectedUser];
-    const isLocked = game.is_locked;
+  const renderSpreadsheet = (gamesList, title) => {
+    if (gamesList.length === 0) return null;
 
     return (
-      <div key={game.id} className="game-card">
-        <div className="game-header">
-          <span className="bowl-name">{game.bowl_name}</span>
-          <span className="game-time">
-            {formatGameTime(game.game_time)}
-            {isLocked && <span className="lock-indicator"> (Locked)</span>}
-          </span>
+      <div style={{ marginBottom: '2rem' }}>
+        <h2 style={{ marginBottom: '1rem' }}>{title}</h2>
+        <div className="spreadsheet-container">
+          <table className="picks-spreadsheet">
+            <thead>
+              <tr>
+                <th className="game-col">Bowl</th>
+                <th className="matchup-col">Matchup</th>
+                <th className="spread-col">Line</th>
+                <th className="time-col">Kickoff</th>
+                {users.map(user => (
+                  <th key={user.id} className={`pick-col ${user.name === selectedUser ? 'current-user' : ''}`}>
+                    {user.name}
+                  </th>
+                ))}
+                <th className="winner-col">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              {gamesList.map(game => {
+                const isLocked = game.is_locked;
+
+                return (
+                  <tr key={game.id} className={isLocked ? 'locked-row' : ''}>
+                    <td className="game-col">{game.bowl_name}</td>
+                    <td className="matchup-col">
+                      <div className="matchup-display">
+                        <span className="away-team">{game.away_team}</span>
+                        <span className="vs-text"> @ </span>
+                        <span className="home-team">{game.home_team}</span>
+                      </div>
+                    </td>
+                    <td className="spread-col">{getSpreadDisplay(game.spread)}</td>
+                    <td className="time-col">
+                      {formatGameTime(game.game_time)}
+                      {isLocked && <span className="lock-icon">🔒</span>}
+                    </td>
+                    {users.map(user => {
+                      const pick = picks[game.id]?.[user.name];
+                      const isCurrentUser = user.name === selectedUser;
+                      const canClick = isCurrentUser && !isLocked;
+
+                      return (
+                        <td key={user.id} className={`pick-col ${isCurrentUser ? 'current-user' : ''}`}>
+                          <div className="pick-cell">
+                            <button
+                              className={`team-btn ${
+                                pick?.picked_team === game.away_team ? 'selected' : ''
+                              } ${
+                                game.winner && pick?.picked_team === game.away_team
+                                  ? (pick.picked_team === game.winner ? 'correct' : 'incorrect')
+                                  : ''
+                              } ${
+                                game.winner === game.away_team ? 'winner-team' : ''
+                              } ${
+                                !canClick ? 'locked' : ''
+                              }`}
+                              onClick={() => canClick && handlePick(game.id, user.name, game.away_team)}
+                              title={`${game.away_team}${canClick ? ' - Click to pick' : ''}`}
+                              disabled={!canClick}
+                            >
+                              {truncateTeam(game.away_team)}
+                            </button>
+                            <button
+                              className={`team-btn ${
+                                pick?.picked_team === game.home_team ? 'selected' : ''
+                              } ${
+                                game.winner && pick?.picked_team === game.home_team
+                                  ? (pick.picked_team === game.winner ? 'correct' : 'incorrect')
+                                  : ''
+                              } ${
+                                game.winner === game.home_team ? 'winner-team' : ''
+                              } ${
+                                !canClick ? 'locked' : ''
+                              }`}
+                              onClick={() => canClick && handlePick(game.id, user.name, game.home_team)}
+                              title={`${game.home_team}${canClick ? ' - Click to pick' : ''}`}
+                              disabled={!canClick}
+                            >
+                              {truncateTeam(game.home_team)}
+                            </button>
+                          </div>
+                        </td>
+                      );
+                    })}
+                    <td className="winner-col">
+                      {game.winner ? (
+                        <span className="winner-badge">
+                          {truncateTeam(game.winner, 10)}
+                          {game.away_score !== null && game.home_score !== null && (
+                            <span className="score">{game.away_score}-{game.home_score}</span>
+                          )}
+                        </span>
+                      ) : (
+                        <span className="pending">-</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
-
-        <div className="game-teams">
-          <div
-            className={`team ${
-              userPick?.picked_team === game.away_team ? 'selected' : ''
-            } ${
-              game.winner === game.away_team ? 'winner' : ''
-            } ${
-              game.winner && game.winner !== game.away_team ? 'loser' : ''
-            } ${
-              isLocked ? 'locked' : ''
-            }`}
-            onClick={() => !isLocked && handlePick(game.id, game.away_team)}
-          >
-            <div className="team-name">{game.away_team}</div>
-            <div className="team-spread">{getSpreadDisplay(game, game.away_team)}</div>
-            {userPick?.picked_team === game.away_team && (
-              <div className={`score-badge ${
-                userPick.is_correct === true ? 'correct' :
-                userPick.is_correct === false ? 'incorrect' : 'pending'
-              }`}>
-                {userPick.is_correct === true ? 'Correct' :
-                 userPick.is_correct === false ? 'Wrong' : 'Your Pick'}
-              </div>
-            )}
-          </div>
-
-          <span className="vs-divider">VS</span>
-
-          <div
-            className={`team ${
-              userPick?.picked_team === game.home_team ? 'selected' : ''
-            } ${
-              game.winner === game.home_team ? 'winner' : ''
-            } ${
-              game.winner && game.winner !== game.home_team ? 'loser' : ''
-            } ${
-              isLocked ? 'locked' : ''
-            }`}
-            onClick={() => !isLocked && handlePick(game.id, game.home_team)}
-          >
-            <div className="team-name">{game.home_team}</div>
-            <div className="team-spread">{getSpreadDisplay(game, game.home_team)}</div>
-            {userPick?.picked_team === game.home_team && (
-              <div className={`score-badge ${
-                userPick.is_correct === true ? 'correct' :
-                userPick.is_correct === false ? 'incorrect' : 'pending'
-              }`}>
-                {userPick.is_correct === true ? 'Correct' :
-                 userPick.is_correct === false ? 'Wrong' : 'Your Pick'}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {game.winner && (
-          <div style={{ textAlign: 'center', marginTop: '1rem', color: '#10b981' }}>
-            Winner: {game.winner}
-            {game.home_score !== null && game.away_score !== null && (
-              <span> ({game.away_score} - {game.home_score})</span>
-            )}
-          </div>
-        )}
       </div>
     );
   };
 
   return (
     <div>
-      {playoffGames.length > 0 && (
-        <>
-          <h2>Playoff Games</h2>
-          {playoffGames.map(renderGameCard)}
-        </>
-      )}
-
-      {bowlGames.length > 0 && (
-        <>
-          <h2 style={{ marginTop: playoffGames.length > 0 ? '2rem' : 0 }}>Bowl Games</h2>
-          {bowlGames.map(renderGameCard)}
-        </>
-      )}
+      <div className="picks-instructions">
+        <p>Click a team button in <strong>your column</strong> to make your pick. Picks lock at kickoff.</p>
+        <p>Currently picking as: <strong>{selectedUser}</strong></p>
+      </div>
+      {renderSpreadsheet(playoffGames, 'Playoff Games')}
+      {renderSpreadsheet(bowlGames, 'Bowl Games')}
     </div>
   );
 }

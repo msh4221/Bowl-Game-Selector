@@ -4,21 +4,32 @@
   box-sizing: border-box;
 }
 
+:root {
+  --tennessee-orange: #FF8200;
+  --tennessee-dark-orange: #E56A00;
+  --tennessee-white: #FFFFFF;
+  --tennessee-smokey: #58595B;
+  --bg-dark: #1a1a1a;
+  --bg-card: rgba(255, 130, 0, 0.08);
+  --border-color: rgba(255, 130, 0, 0.2);
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   min-height: 100vh;
-  color: #fff;
+  color: var(--tennessee-white);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 20px;
 }
 
 h1, h2, h3 {
   margin-bottom: 1rem;
+  color: var(--tennessee-orange);
 }
 
 button {
@@ -37,18 +48,20 @@ button {
 }
 
 .login-box {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 130, 0, 0.1);
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 40px;
   width: 100%;
   max-width: 400px;
   text-align: center;
+  border: 2px solid var(--tennessee-orange);
 }
 
 .login-box h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
+  color: var(--tennessee-orange);
 }
 
 .login-box p {
@@ -59,7 +72,7 @@ button {
 .login-box input {
   width: 100%;
   padding: 12px 16px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid var(--tennessee-orange);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
@@ -69,16 +82,17 @@ button {
 
 .login-box input:focus {
   outline: none;
-  border-color: #4f46e5;
+  border-color: var(--tennessee-white);
+  background: rgba(255, 130, 0, 0.2);
 }
 
 .login-box button {
   width: 100%;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  background: var(--tennessee-orange);
   border: none;
   border-radius: 8px;
-  color: #fff;
+  color: var(--tennessee-white);
   font-size: 1rem;
   font-weight: 600;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -86,7 +100,8 @@ button {
 
 .login-box button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+  box-shadow: 0 4px 12px rgba(255, 130, 0, 0.4);
+  background: var(--tennessee-dark-orange);
 }
 
 .error-message {
@@ -100,12 +115,13 @@ button {
   justify-content: space-between;
   align-items: center;
   padding: 20px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid var(--tennessee-orange);
   margin-bottom: 2rem;
 }
 
 .header h1 {
   margin: 0;
+  color: var(--tennessee-orange);
 }
 
 .header-actions {
@@ -122,14 +138,22 @@ button {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  color: #fff;
+  background: var(--tennessee-orange);
+  color: var(--tennessee-white);
+}
+
+.btn-primary:hover {
+  background: var(--tennessee-dark-orange);
 }
 
 .btn-secondary {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--tennessee-orange);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 130, 0, 0.2);
 }
 
 /* Tabs */
@@ -137,7 +161,7 @@ button {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 1rem;
 }
 
@@ -154,21 +178,21 @@ button {
 
 .tab:hover {
   color: #fff;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 130, 0, 0.2);
 }
 
 .tab.active {
-  color: #fff;
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: var(--tennessee-white);
+  background: var(--tennessee-orange);
 }
 
 /* Game Card */
 .game-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
 }
 
 .game-header {
@@ -180,7 +204,7 @@ button {
 
 .bowl-name {
   font-size: 0.9rem;
-  color: #a78bfa;
+  color: var(--tennessee-orange);
   font-weight: 600;
 }
 
@@ -189,77 +213,12 @@ button {
   color: rgba(255, 255, 255, 0.6);
 }
 
-.game-teams {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.team {
-  flex: 1;
-  text-align: center;
-  padding: 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: 2px solid transparent;
-}
-
-.team:hover:not(.locked):not(.winner) {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.team.selected {
-  border-color: #4f46e5;
-  background: rgba(79, 70, 229, 0.2);
-}
-
-.team.winner {
-  border-color: #10b981;
-  background: rgba(16, 185, 129, 0.2);
-}
-
-.team.loser {
-  opacity: 0.5;
-}
-
-.team.locked {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.team-name {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.team-spread {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.vs-divider {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.4);
-  font-weight: 600;
-}
-
-.lock-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  color: #f59e0b;
-  margin-top: 0.5rem;
-}
-
 /* Leaderboard */
 .leaderboard {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   border-radius: 12px;
   overflow: hidden;
+  border: 1px solid var(--border-color);
 }
 
 .leaderboard-header {
@@ -267,7 +226,7 @@ button {
   grid-template-columns: 50px 1fr 100px 100px;
   gap: 1rem;
   padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 130, 0, 0.15);
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -277,12 +236,12 @@ button {
   grid-template-columns: 50px 1fr 100px 100px;
   gap: 1rem;
   padding: 15px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
   transition: background 0.2s;
 }
 
 .leaderboard-row:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 130, 0, 0.1);
 }
 
 .leaderboard-row:last-child {
@@ -291,7 +250,7 @@ button {
 
 .rank {
   font-weight: 700;
-  color: #a78bfa;
+  color: var(--tennessee-orange);
 }
 
 .rank.gold { color: #fbbf24; }
@@ -307,13 +266,14 @@ button {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
+  color: var(--tennessee-orange);
 }
 
 .user-selector select {
   padding: 10px 16px;
   border-radius: 8px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--tennessee-orange);
+  background: rgba(255, 130, 0, 0.1);
   color: #fff;
   font-size: 1rem;
   min-width: 200px;
@@ -321,14 +281,20 @@ button {
 
 .user-selector select:focus {
   outline: none;
-  border-color: #4f46e5;
+  background: rgba(255, 130, 0, 0.2);
+}
+
+.user-selector select option {
+  background: #2d2d2d;
+  color: #fff;
 }
 
 /* Admin Panel */
 .admin-panel {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 24px;
+  border: 1px solid var(--border-color);
 }
 
 .admin-section {
@@ -337,7 +303,7 @@ button {
 
 .admin-section h3 {
   margin-bottom: 1rem;
-  color: #a78bfa;
+  color: var(--tennessee-orange);
 }
 
 .admin-buttons {
@@ -366,23 +332,25 @@ button {
 }
 
 .archive-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 20px;
   cursor: pointer;
   transition: all 0.2s;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
 }
 
 .archive-card:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 130, 0, 0.15);
   transform: translateY(-2px);
+  border-color: var(--tennessee-orange);
 }
 
 .archive-year {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
+  color: var(--tennessee-orange);
 }
 
 /* Score Badge */
@@ -407,27 +375,220 @@ button {
 }
 
 .score-badge.pending {
-  background: rgba(245, 158, 11, 0.2);
-  color: #f59e0b;
+  background: rgba(255, 130, 0, 0.2);
+  color: var(--tennessee-orange);
+}
+
+/* Spreadsheet Picks View */
+.picks-instructions {
+  background: rgba(255, 130, 0, 0.15);
+  border: 1px solid var(--tennessee-orange);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.picks-instructions p {
+  margin: 0.25rem 0;
+}
+
+.picks-instructions strong {
+  color: var(--tennessee-orange);
+}
+
+.spreadsheet-container {
+  overflow-x: auto;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.picks-spreadsheet {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 1100px;
+}
+
+.picks-spreadsheet th,
+.picks-spreadsheet td {
+  padding: 8px 10px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 130, 0, 0.1);
+}
+
+.picks-spreadsheet thead {
+  background: rgba(255, 130, 0, 0.2);
+  position: sticky;
+  top: 0;
+}
+
+.picks-spreadsheet th {
+  font-weight: 600;
+  color: var(--tennessee-white);
+  white-space: nowrap;
+}
+
+.picks-spreadsheet tbody tr:hover {
+  background: rgba(255, 130, 0, 0.08);
+}
+
+.picks-spreadsheet tbody tr.locked-row {
+  background: rgba(255, 130, 0, 0.05);
+}
+
+/* Column widths */
+.game-col { min-width: 130px; text-align: left; }
+.matchup-col { min-width: 160px; text-align: left; }
+.spread-col { width: 60px; }
+.time-col { width: 100px; white-space: nowrap; }
+.pick-col { width: 90px; }
+.winner-col { min-width: 80px; }
+
+/* Current user column highlight */
+.pick-col.current-user {
+  background: rgba(255, 130, 0, 0.2);
+}
+
+th.pick-col.current-user {
+  background: rgba(255, 130, 0, 0.35);
+  color: var(--tennessee-white);
+}
+
+/* Matchup styling */
+.matchup-display {
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.matchup-display .away-team {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.matchup-display .vs-text {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.7rem;
+  margin: 0 2px;
+}
+
+.matchup-display .home-team {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Pick Cell with Team Buttons */
+.pick-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+}
+
+.team-btn {
+  display: block;
+  width: 100%;
+  padding: 4px 6px;
+  font-size: 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 80px;
+}
+
+.team-btn:hover:not(.locked):not(.selected) {
+  background: rgba(255, 130, 0, 0.3);
+  border-color: var(--tennessee-orange);
+  color: var(--tennessee-white);
+}
+
+.team-btn.selected {
+  background: var(--tennessee-orange);
+  border-color: var(--tennessee-orange);
+  color: var(--tennessee-white);
+  font-weight: 600;
+}
+
+.team-btn.correct {
+  background: rgba(16, 185, 129, 0.4);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.team-btn.incorrect {
+  background: rgba(239, 68, 68, 0.3);
+  border-color: #ef4444;
+  color: #ef4444;
+  text-decoration: line-through;
+}
+
+.team-btn.locked {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.team-btn.winner-team {
+  border-color: #10b981;
+  box-shadow: 0 0 4px rgba(16, 185, 129, 0.5);
+}
+
+.no-pick {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.75rem;
+}
+
+/* Lock icon */
+.lock-icon {
+  margin-left: 4px;
+  font-size: 0.7rem;
+}
+
+/* Winner badge */
+.winner-badge {
+  color: #10b981;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.winner-badge .score {
+  font-weight: 400;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  display: block;
+}
+
+.pending {
+  color: rgba(255, 255, 255, 0.3);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .game-teams {
-    flex-direction: column;
-  }
-
-  .team {
-    width: 100%;
-  }
-
-  .vs-divider {
-    padding: 10px 0;
+  .container {
+    padding: 10px;
   }
 
   .leaderboard-header,
   .leaderboard-row {
     grid-template-columns: 40px 1fr 60px 60px;
     font-size: 0.85rem;
+  }
+
+  .picks-spreadsheet {
+    font-size: 0.7rem;
+  }
+
+  .picks-spreadsheet th,
+  .picks-spreadsheet td {
+    padding: 5px 6px;
+  }
+
+  .team-btn {
+    font-size: 0.65rem;
+    padding: 3px 4px;
   }
 }
